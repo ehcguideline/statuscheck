@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Team Clay Hacker | Client Status</title>
+
+<style>
+:root{
+  --green:#22c55e; --blue:#38bdf8; --red:#ef4444; --bg:#020617;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#05070c;font-family:Segoe UI, monospace;color:#e5e7eb}
+
+/* HEADER */
+header{padding:25px;text-align:center;background:#020617;border-bottom:2px solid var(--green)}
+header h1{margin:0;color:var(--blue)}
+header p{margin-top:6px;color:#9ca3af}
+
+/* CONTAINER */
+.container{max-width:900px;margin:40px auto;background:var(--bg);padding:25px;border-radius:12px;box-shadow:0 0 40px rgba(0,0,0,.8)}
+
+/* FORM */
+.form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+input{padding:12px;border-radius:8px;background:#020617;color:#e5e7eb;border:1px solid #1f2937;transition:.3s}
+input:focus{border-color:var(--blue);box-shadow:0 0 10px rgba(56,189,248,.4)}
+
+/* BUTTON */
+.btn{margin-top:18px;width:100%;padding:14px;background:linear-gradient(135deg,var(--green),#16a34a);
+border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;transition:.3s;
+box-shadow:0 8px 20px rgba(34,197,94,.35)}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(34,197,94,.6)}
+.btn:active{transform:scale(.97)}
+.danger{background:linear-gradient(135deg,#dc2626,var(--red));box-shadow:0 8px 20px rgba(239,68,68,.4)}
+.danger:hover{box-shadow:0 12px 25px rgba(239,68,68,.7)}
+
+/* LOADER */
+.loader{position:fixed;inset:0;background:#020617;display:none;align-items:center;justify-content:center;z-index:1000;flex-direction:column}
+.spinner{width:70px;height:70px;border:6px solid #1f2937;border-top:6px solid var(--green);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader p{margin-top:15px;color:#9ca3af}
+
+/* RESULT */
+.result{display:none;margin-top:30px;background:#000;padding:25px;border-radius:12px;border:1px solid #1f2937}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.card{background:#020617;padding:15px;border-radius:8px;border-left:4px solid var(--blue);
+opacity:0;transform:translateY(20px);animation:reveal .6s forwards}
+.card:nth-child(2){animation-delay:.2s}
+.card:nth-child(3){animation-delay:.4s}
+.card:nth-child(4){animation-delay:.6s}
+@keyframes reveal{to{opacity:1;transform:none}}
+.card span{display:block;margin-top:6px;font-weight:bold}
+.payment{margin-top:20px;padding:15px;background:#020617;border-radius:8px;opacity:0;animation:reveal .6s .8s forwards}
+.sync{margin-top:25px;background:#000;padding:15px;border-radius:8px;font-size:14px;color:var(--green);opacity:0;animation:reveal .6s 1s forwards}
+.sync span{display:block;animation:pulse 1.5s infinite}
+@keyframes pulse{0%{opacity:.4}50%{opacity:1}100%{opacity:.4}}
+
+/* MODAL COMMON */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.75);display:none;align-items:center;justify-content:center;z-index:2000}
+.modal-box{background:#020617;padding:25px;border-radius:14px;max-width:520px;width:95%;
+box-shadow:0 0 40px rgba(0,0,0,.8)}
+.modal-box h3{margin-top:0;color:var(--green)}
+.modal-box p{margin:15px 0;color:#cbd5f5}
+
+/* PAYMENT GATEWAY */
+.methods{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
+.method{border:1px solid #1f2937;border-radius:10px;padding:12px;text-align:center;cursor:pointer;transition:.3s}
+.method.active{border-color:var(--green);box-shadow:0 0 15px rgba(34,197,94,.35)}
+.method:hover{transform:translateY(-2px)}
+.pg-form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.pg-form input{grid-column:span 1}
+.pg-form .full{grid-column:1 / -1}
+
+/* SUCCESS */
+.success h3{color:var(--green);margin-bottom:10px}
+.success p{margin:10px 0;font-size:15px}
+.download{margin-top:12px}
+
+/* FOOTER */
+footer{text-align:center;padding:20px;color:#6b7280;font-size:13px}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Team Clay Hacker</h1>
+  <p>Client Work Status Portal</p>
+</header>
+
+<div class="container">
+  <h2>🔍 Status Check</h2>
+  <div class="form">
+    <input id="cname" placeholder="Client Name">
+    <input id="uid" placeholder="User ID">
+    <input id="track" placeholder="Tracking Code">
+  </div>
+  <button class="btn" onclick="checkStatus()">Check Status</button>
+
+  <div class="result" id="result">
+    <h3>Work Status Report</h3>
+    <div class="grid">
+      <div class="card">Profile URL <span>facebook.com/profile.php?id=61587315842599</span></div>
+      <div class="card">Work Category <span>Account disabled & information gather</span></div>
+      <div class="card">Work Status <span style="color:var(--green)">Completed ✔️</span></div>
+      <div class="card">Account Activation <span style="color:var(--red)">OFF</span></div>
+    </div>
+
+    <div class="payment">
+      <p>Total Cost: 3770৳</p>
+      <p>Paid: 2670৳</p>
+      <p>Due: <b style="color:var(--red)">1100৳</b></p>
+    </div>
+
+    <div class="sync">
+      <span>Connecting secure internal server…</span>
+      <span>Encrypted channel established…</span>
+      <span>Status synchronized successfully…</span>
+    </div>
+
+    <button class="btn danger" onclick="openGateway()">Proceed to Payment</button>
+  </div>
+</div>
+
+<footer>© 2026 Team Clay Hacker</footer>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="spinner"></div>
+  <p>Processing request…</p>
+</div>
+
+<!-- PAYMENT GATEWAY MODAL -->
+<div class="modal" id="gateway">
+  <div class="modal-box">
+    <h3>Complete Payment</h3>
+
+    <div class="methods">
+      <div class="method active" onclick="selectMethod(this)">bKash</div>
+      <div class="method" onclick="selectMethod(this)">Nagad</div>
+      <div class="method" onclick="selectMethod(this)">Rocket</div>
+      <div class="method" onclick="selectMethod(this)">Upay</div>
+    </div>
+
+    <div class="pg-form">
+      <input placeholder="Sender Number">
+      <input placeholder="Transaction ID">
+      <input placeholder="Amount (1100৳)" value="1100" readonly>
+      <input class="full" id="email" placeholder="Client Email (for verification)">
+    </div>
+
+    <button class="btn" onclick="submitPayment()">Submit Payment</button>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal" id="success">
+  <div class="modal-box success">
+    <h3>Payment Successful</h3>
+    <p>Outstanding due has been cleared successfully.<br>
+    Permanent account delete activation is now enabled.</p>
+    <p>User information package is ready.<br>
+    You can download the file below or it will be sent to your email.</p>
+
+    <button class="btn download" onclick="downloadFile()">Download File</button>
+  </div>
+</div>
+
+<script>
+function checkStatus(){
+  const ok = cname.value==="Anjan Saker" && uid.value==="TWHHASFAD&UI" && track.value==="FBHAS021";
+  if(!ok){return alert("Invalid information. Please verify and try again.");}
+  loader.style.display="flex";
+  setTimeout(()=>{
+    loader.style.display="none";
+    result.style.display="block";
+    result.scrollIntoView({behavior:"smooth"});
+  },2200);
+}
+
+function openGateway(){ gateway.style.display="flex"; }
+
+function selectMethod(el){
+  document.querySelectorAll('.method').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function submitPayment(){
+  if(!email.value.trim()){ return alert("Please provide your email."); }
+  gateway.style.display="none";
+  loader.querySelector('p').innerText="Verifying payment & activating services…";
+  loader.style.display="flex";
+  setTimeout(()=>{
+    loader.style.display="none";
+    success.style.display="flex";
+  },2500);
+}
+
+function downloadFile(){
+  // Open Google Drive link directly
+  window.open("https://drive.google.com/file/d/1F3Ocl5DIFTw9XH_HLFhz-tzTP_bIG7hD/view?usp=drivesdk","_blank");
+}
+</script>
+
+</body>
+</html>
